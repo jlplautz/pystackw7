@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "pystackw7"
+version = "0.1.0"
+description = "Com esse projeto implementaremos um aplicação financeira apoio PYTHONANDO."
+authors = ["Jorge Luiz Plautz <jorge.plautz@gmail.com>"]
+license = "GPLv3"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
