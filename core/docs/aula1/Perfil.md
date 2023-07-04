@@ -1,23 +1,13 @@
-## Perfil
-
+Perfil
 Crie uma URL para a HOME:
-
 Crie a view home:
-
-```python
 def home(request):
     return render(request, 'home.html')
-```
-
+​
 Configure onde o Django irá procurar por HTML:
-
-```python
 os.path.join(BASE_DIR, 'templates')
-```
-
+​
 Crie o arquivo base.html em templates/bases:
-
-```jsx
 <!doctype html>
 <html lang="en">
   <head>
@@ -37,11 +27,8 @@ Crie o arquivo base.html em templates/bases:
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
-```
-
+​
 Crie o home.html
-
-```jsx
 {% extends 'bases/base.html' %}
 
 {% block 'body' %}
@@ -199,22 +186,16 @@ Crie o home.html
         <br>
     </div>
 {% endblock %}
-```
-
+​
 Configure os arquivos estáticos:
-
-```jsx
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'templates/static'),)
 STATIC_ROOT = os.path.join('static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-```
-
+​
 Crie o base.css em templates/static/geral/css
-
-```jsx
 body{
     background-color: #1C1A1A !important;
     color: white !important;
@@ -228,17 +209,11 @@ body{
     --differential-color: #E96363;
 
 }
-```
-
+​
 Importe o base.css em base.html
-
-```jsx
 <link href="{% static 'geral/css/base.css' %}" rel="stylesheet">
-```
-
+​
 Crie o home.css
-
-```jsx
 .card{
 
     width: 100%;
@@ -310,44 +285,25 @@ Crie o home.css
     color: var(--contrast-color);
 }
 
+
 .icone-setas{
     width: 50%;
     display: inline;
 }
-```
-
+​
 Adicione as imagens:
-
-![entradas.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2fbac0a6-216e-4501-905f-9c0f48d27697/entradas.png)
-
-![saidas.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dc7615f5-71ff-4e41-8b79-6a8385d8bf92/saidas.png)
-
-![exit.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3128d42c-627d-4f67-b76f-b7c16417181f/exit.png)
-
-![check.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8ef32d61-7cf2-44bf-b049-61c4825406a0/check.png)
-
-```jsx
 <img class="icone-setas" src="{% static 'perfil/img/entradas.png' %}">
 
 <img class="icone-setas" src="{% static 'perfil/img/saidas.png' %}">
-```
-
+​
 Agora crie a URL para gerenciar:
-
-```python
 path('gerenciar/', views.gerenciar, name="gerenciar"),
-```
-
+​
 Crie a VIEW gerenciar:
-
-```python
 def gerenciar(request):
     return render(request, 'gerenciar.html')
-```
-
+​
 Crie o gerenciar.html
-
-```python
 {% extends 'bases/base.html' %}
 {% load static %}
 {% block 'head' %}
@@ -407,7 +363,7 @@ Crie o gerenciar.html
                     <label>Valor</label>
                     <input type="number" name="valor" class="form-control" placeholder="">
                     <br>
-                    <input type="file" placeholder="Ícone" name="icone">
+                    <input type="file" placeholder="Ícone" name="icone" required>
                     <br>
                     <br>
                     <input style="width: 100%" type="submit" class="botao-principal">
@@ -455,11 +411,8 @@ Crie o gerenciar.html
         </div>
     </div>
 {% endblock %}
-```
-
+​
 Crie as models Categoria e Conta:
-
-```python
 from django.db import models
 
 # Create your models here.
@@ -491,25 +444,15 @@ class Conta(models.Model):
 
     def __str__(self):
         return self.apelido
-```
-
+​
 Execute as migrações!
-
 Altere o FORM de cadastrar uma nova conta para enviar os dados:
-
-```python
 <form action="{% url 'cadastrar_banco' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
-```
-
+​
 Crie a url cadastrar_banco:
-
-```python
 path('cadastrar_banco/', views.cadastrar_banco, name="cadastrar_banco"),
-```
-
+​
 Crie a view cadastrar_banco
-
-```python
 def cadastrar_banco(request):
     apelido = request.POST.get('apelido')
     banco = request.POST.get('banco')
@@ -531,11 +474,8 @@ def cadastrar_banco(request):
     conta.save()
 
     return redirect('/perfil/gerenciar/')
-```
-
+​
 Configure as mensagens:
-
-```python
 from django.contrib.messages import constants
 
 MESSAGE_TAGS = {
@@ -545,35 +485,23 @@ MESSAGE_TAGS = {
     constants.SUCCESS: 'alert-success',
     constants.INFO: 'alert-info ',
 }
-```
-
+​
 Crie a mensagem:
-
-```python
 messages.add_message(request, constants.ERROR, 'Preencha todos os campos')
-```
-
+​
 Exiba a mensagem no HTML:
-
-```python
 {% if messages %}
     {% for message in messages %}
         <div class="alert {{ message.tags }}">{{ message }}</div>
     {% endfor %}
 {% endif %}
-```
-
+​
 Busque todas as contas cadastradas e envie para o HTML:
-
-```python
 def gerenciar(request):
     contas = Conta.objects.all()
     return render(request, 'gerenciar.html', {'contas': contas,})
-```
-
+​
 Adicione uma URL para os arquivos de media:
-
-```python
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -584,24 +512,19 @@ urlpatterns = [
     path('perfil/', include('perfil.urls')),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-```
-
+​
 Agora liste as contas:
-
-```python
 {% for conta in contas %}
     <div class="lista-contas-main">
         <span><img width="10%" src="{{conta.icone.url}}">&nbsp&nbsp{{conta}}</span>
 
-        <span class="total-conta positivo ">R$ {{conta.valor}}</span>
+        <span class="total-conta positivo ">R$ {{conta.valor}}&nbsp&nbsp&nbsp
+        <a href="#"><img src="{% static 'perfil/img/exit.png' %}"></a></span>
     </div>
     <br>
 {% endfor %}
-```
-
+​
 Calcule o total de todas as contas na view e exiba no HTML:
-
-```python
 def gerenciar(request):
     contas = Conta.objects.all()
     #total_contas = contas.aggregate(Sum('valor'))
@@ -610,46 +533,28 @@ def gerenciar(request):
     for conta in contas:
         total_contas += conta.valor
     return render(request, 'gerenciar.html', {'contas': contas, 'total_contas': total_contas})
-```
-
+​
 Crie um link para deletar uma conta:
-
-```python
 <a href="/perfil/deletar_banco/{{conta.id}}"><img src="{% static 'perfil/img/exit.png' %}"></a>
-```
-
+​
 Crie a URL deletar_banco:
-
-```python
 path('deletar_banco/<int:id>', views.deletar_banco, name="deletar_banco"),
-```
-
+​
 Crie a view deletar_banco:
-
-```python
 def deletar_banco(request, id):
     conta = Conta.objects.get(id=id)
     conta.delete()
     
     messages.add_message(request, constants.SUCCESS, 'Conta removida com sucesso')
     return redirect('/perfil/gerenciar/')
-```
-
+​
 Atualize o FORM de categoria:
-
-```python
 <form action="{% url 'cadastrar_categoria' %}" method="POST">{% csrf_token %}
-```
-
+​
 Crie a URL cadastrar_categoria:
-
-```python
 path('cadastrar_categoria/', views.cadastrar_categoria, name="cadastrar_categoria"),
-```
-
+​
 Crie a VIEW cadastrar_categoria:
-
-```python
 def cadastrar_categoria(request):
     nome = request.POST.get('categoria')
     essencial = bool(request.POST.get('essencial'))
@@ -663,11 +568,8 @@ def cadastrar_categoria(request):
 
     messages.add_message(request, constants.SUCCESS, 'Categoria cadastrada com sucesso')
 		return redirect('/perfil/gerenciar/')
-```
-
+​
 Em gerenciar busque todas as categorias:
-
-```python
 def gerenciar(request):
     contas = Conta.objects.all()
     categorias = Categoria.objects.all()
@@ -679,17 +581,11 @@ def gerenciar(request):
 
     print(total_contas)
     return render(request, 'gerenciar.html', {'contas': contas, 'total_contas': total_contas, 'categorias': categorias})
-```
-
+​
 Crie a URL update_categoria:
-
-```python
 path('update_categoria/<int:id>', views.update_categoria, name="update_categoria"),
-```
-
+​
 Crie a view update_categoria:
-
-```python
 def update_categoria(request, id):
     categoria = Categoria.objects.get(id=id)
 
@@ -698,30 +594,22 @@ def update_categoria(request, id):
     categoria.save()
 
     return redirect('/perfil/gerenciar/')
-```
-
+​
 Adicione o link de redirecionamento:
-
-```python
-<a href="{% url 'update_categoria' categoria.id %}"><img src="{% if categoria.essencial %}{% static 'perfil/img/check.png' %}{% else %}{% static 'perfil/img/exit.png' %}{% endif %}"></a>
-```
-
+<a href="{% url 'update_categoria' categoria.id %}">
+<img src="{% if categoria.essencial %}{% static 'perfil/img/check.png' %}{% else %}{% static 'perfil/img/exit.png' %}{% endif %}"></a>
+​
 Em utils crie a função calcula_total:
-
-```python
 def calcula_total(obj, campo):
     total = 0
     for i in obj:
         total += getattr(i, campo)
 
     return total
-```
-
+​
 Altere a view home para:
-
-```python
 def home(request):
     contas = Conta.objects.all()
     saldo_total = calcula_total(contas, 'valor')
     return render(request, 'home.html', {'contas': contas, 'saldo_total': saldo_total,})
-```
+​
