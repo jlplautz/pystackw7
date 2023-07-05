@@ -1,9 +1,15 @@
+import os
 from datetime import datetime
+from io import BytesIO
 
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.http import FileResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
+from core import settings
 from core.perfil.models import Categoria, Conta
 
 from .models import Valores
@@ -83,3 +89,25 @@ def view_extrato(request):
             'categorias': categorias,
         },
     )
+
+
+def exportar_pdf(request):
+    valores = Valores.objects.filter(data__month=datetime.now().month)
+    contas = Conta.objects.all()
+    categorias = Categoria.objects.all()
+
+    path_template = os.path.join(
+        settings.BASE_DIR, 'core/templates/partials/extrato.html'
+    )
+    path_output = BytesIO()
+
+    template_render = render_to_string(
+        path_template,
+        {'valores': valores, 'contas': contas, 'categorias': categorias},
+    )
+
+    HTML(string=template_render).write_pdf(path_output)
+    # retornar o ponteiro no arquivo e começar leitura no inicio
+    path_output.seek(0)
+
+    return FileResponse(path_output, filename='extrato.pdf')
