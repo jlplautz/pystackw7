@@ -21,4 +21,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('perfil/', include('core.perfil.urls')),
+    path('extrato/', include('core.extrato.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
