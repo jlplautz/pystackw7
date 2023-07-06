@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.perfil',
     'core.extrato',
+    'core.planejamento',
 ]
 
 MIDDLEWARE = [
