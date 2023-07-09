@@ -23,4 +23,5 @@ urlpatterns = [
     path('perfil/', include('core.perfil.urls')),
     path('extrato/', include('core.extrato.urls')),
     path('planejamento/', include('core.planejamento.urls')),
+    path('contas/', include('core.contas.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

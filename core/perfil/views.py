@@ -1,21 +1,41 @@
+from datetime import datetime
+
 from django.contrib import messages
 from django.contrib.messages import constants
+from django.db.models import Sum
 from django.shortcuts import redirect, render
 
+from core.extrato.models import Valores
 from core.perfil.models import Categoria, Conta
 
-from .utils import calcula_total
+from .utils import calcula_equilibrio_financeiro, calcula_total
 
 
 def home(request):
     contas = Conta.objects.all()
     saldo_total = calcula_total(contas, 'valor')
+    valores = Valores.objects.filter(data__month=datetime.now().month)
+    entradas = valores.filter(tipo='E')
+    saidas = valores.filter(tipo='S')
+
+    total_entradas = calcula_total(entradas, 'valor')
+    total_saidas = calcula_total(saidas, 'valor')
+
+    percentual_gastos_essenciais = calcula_equilibrio_financeiro()
+    percentual_gastos_nao_essenciais = calcula_equilibrio_financeiro()
+
     return render(
         request,
         'home.html',
         {
             'contas': contas,
             'saldo_total': saldo_total,
+            'total_entradas': total_entradas,
+            'total_saidas': total_saidas,
+            'percentual_gastos_essenciais': percentual_gastos_essenciais,
+            'percentual_gastos_nao_essenciais': (
+                percentual_gastos_nao_essenciais,
+            ),
         },
     )
 
@@ -103,3 +123,22 @@ def update_categoria(request, id):
     categoria.save()
 
     return redirect('/perfil/gerenciar/')
+
+
+def dashboard(request):
+    dados = {}
+    categorias = Categoria.objects.all()
+
+    for categoria in categorias:
+        dados[categoria.categoria] = Valores.objects.filter(
+            categoria=categoria
+        ).aggregate(Sum('valor'))['valor__sum']
+
+    return render(
+        request,
+        'dashboard.html',
+        {
+            'labels': list(dados.keys()),
+            'values': list(dados.values()),
+        },
+    )

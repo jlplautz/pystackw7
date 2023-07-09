@@ -11,6 +11,7 @@ urlpatterns = [
         views.cadastrar_categoria,
         name='cadastrar_categoria',
     ),
+    path('dashboard/', views.dashboard, name='dashboard'),
     path('deletar_banco/<int:id>', views.deletar_banco, name='deletar_banco'),
     path(
         'update_categoria/<int:id>',

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core.perfil',
     'core.extrato',
     'core.planejamento',
+    'core.contas',
 ]
 
 MIDDLEWARE = [
